@@ -1,0 +1,33 @@
+{{>layouts/header}}
+
+<div class="mb-3 row">
+  <label for="staticId" class="col-sm-2 col-form-label">Id</label>
+  <div class="col-sm-10">
+    <input type="text" readonly class="form-control-plaintext" id="staticId" value="{{article.id}}">
+  </div>
+</div>
+<div class="mb-3 row">
+  <label for="inputTitle" class="col-sm-2 col-form-label">Title</label>
+  <div class="col-sm-10">
+    <input type="text" class="form-control" id="inputTitle" value="{{article.title}}" readonly>
+  </div>
+</div>
+<div class="mb-3 row">
+  <label for="inputContent" class="col-sm-2 col-form-label">Content</label>
+  <div class="col-sm-10">
+    <textarea class="form-control" id="inputContent" rows="4" readonly>{{article.content}}</textarea> 
+  </div>
+</div>
+
+<div class="mx-auto" style="width:90%">
+<a href="/article/WriteForm" class="btn btn-primary">새글 쓰기</a>
+<a href="/article/List" class="btn btn-secondary">목록</a>
+<a href="/article/UpdateForm/{{id}}" class="btn btn-warning">수정</a>
+<a href="/article/{{id}}/Delete" class="btn btn-danger">삭제</a>
+<a href="/" class="btn btn-info">Home</a>
+</div>
+
+{{>layouts/footer}}
+
+
+

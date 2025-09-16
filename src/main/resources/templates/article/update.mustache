@@ -1,0 +1,36 @@
+{{>layouts/header}}
+
+{{#article}}
+<form action="/article/Update" method="POST">
+<input type="hidden" name="id" value="{{id}}">
+<table class="table table-border table-striped mx-auto" style="width:90%;">
+	<tbody>
+		<tr>
+			<th scope="row">Id</th>
+			<td>{{id}}</td>
+		</tr>
+		<tr>
+			<th scope="row">제목</th>
+			<td><input type="text" name="title" class="form-control" value="{{title}}"></td>
+		</tr>
+		<tr>
+			<th scope="row">내용</th>
+			<td><textarea name="content" class="form-control" 
+			style="resize:none; outline:none;">{{content}}</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+			<input type="submit" value="수정 하기" class="btn btn-primary">
+			<a href="/article/List" class="btn btn-secondary">목록</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+</form>
+{{/article}}
+
+{{>layouts/footer}}
+
+
+

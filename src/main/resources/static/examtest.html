@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h2>Exam Test</h2>
+	<a href="/exam">Get 방식 호출</a><br>
+	<form action="/exam" method="POST">
+		<input type="submit" value="POST 방식 호출">
+	</form>
+	<!-- form 테그는 GET,POST만 가능 -->
+	<form action="/exam" method="DELETE">
+		<input type="submit" value="DELETE 방식 호출">
+	</form>
+	
+	<div>
+		<select id="method">
+			<option value="get">GET</option>
+			<option value="post">POST</option>
+			<option value="delete">DELETE</option>
+			<option value="patch">PATCH</option>
+			<option value="put">PUT</option>
+		</select>
+		<input type="url" id="url" value="http://localhost:8080/exam">
+		<button id="send">Send</button><hr>
+		<button id="getXML">Get XML</button><hr>
+		<button id="mytest">MyTest</button>
+		<h2>Rest API 를 위해서는 JavaScript를 사용해야 한다</h2>
+		<div id="result"></div>
+	</div>
+	
+	<script>
+	
+		const sendEl = document.querySelector('#send')
+		sendEl.onclick = function() {
+			let method = document.querySelector('#method>option:checked').value
+			let url = document.querySelector('#url').value
+			const resultEl = document.querySelector('#result')
+			
+			fetch(url, {
+				method : method
+			})
+				.then( (response) => response.text() ) // 일반 text, xml 를 받을땐 .text() 쓴다
+		 // .then( (response) => response.xml() ) 이런 함수는 없다 .text()로 해야함
+ 		 // .then( (response) => response.json() ) JSON을 받을땐 .json() 쓴다
+				.then( (data) => {
+					alert(data)
+					console.log(data)
+					resultEl.innerHTML = data
+				} )
+	//	alert(method)
+		}
+		
+		/*
+		// xml 불러오기 소스
+		fetch("https://www.w3schools.com/xml/note.xml")
+		  .then(response => response.text())     // 응답을 텍스트로 받음
+		  .then(str => {
+			  	// .text() -> xml document 객체로 변환
+			  	// 변환하면 xmlDoc.getElementsByTagName() 사용 가능해진다
+		    const parser = new DOMParser();
+		    const xmlDoc = parser.parseFromString(str, "application/xml");
+		    
+		    // XML 파싱 예시
+		    const to = xmlDoc.getElementsByTagName("to")[0].textContent;
+		    const from = xmlDoc.getElementsByTagName("from")[0].textContent;
+
+		    console.log("받는 사람:", to);
+		    console.log("보낸 사람:", from);
+		  })
+		  .catch(err => console.error(err));
+		*/
+		
+		// xml 불러오기
+		const getXMLEl = document.querySelector('#getXML')
+		getXMLEl.onclick = function() {
+			let url = "/data.xml";
+			const resultEl = document.querySelector('#result')
+			fetch(url)
+				.then( (response) => response.text() )
+				.then( (text) => {
+					alert(text)
+					// text을 -> XML Document 객체로 변환
+					const parser = new DOMParser();
+					const xmlDoc = parser.parseFromString(text, "application/xml")
+					
+					const toEl = xmlDoc.getElementsByTagName('to') // 배열
+					const fromEl = xmlDoc.getElementsByTagName('from')
+					const headingEl = xmlDoc.getElementsByTagName('heading')[0]
+					const bodyEl = xmlDoc.getElementsByTagName('body')[0]
+					let html = `<ul>
+						<li>to : ${ toEl[0].innerHTML }</li>
+						<li>from : ${ fromEl[0].innerHTML }</li>
+						<li>heading : ${ headingEl.innerHTML }</li>
+						<li>body : ${ bodyEl.innerHTML }</li>
+					</ul>`
+					
+					console.log(text)
+					result.innerHTML = html
+				} )
+				.then( (error) => console.log(error) )
+				
+		}
+		
+		const mytestEl = document.querySelector('#mytest')
+		mytestEl.addEventListener('click', (e) => {
+		let url = "/test.json"
+		fetch(url)
+			.then( (response) => response.json() )
+			.then( (testdata) => {
+				const resultEl = document.querySelector('#result')
+				console.log(testdata)
+				
+				testdata.forEach( (test) => {
+				let html = `<ul>
+					<li>이름 : ${test.name}</li>
+					<li>전화번호 : ${test.phone}</li>
+					<li>성별 : ${test.sex}</li>
+				</ul>`
+					resultEl.innerHTML += `${html}`
+				} )
+			} )
+		console.log(5 + 3)
+		console.log(`5 < 3 : ${5 < 3}`) // false
+		console.log(`true > false : ${true > false}`) // 밑에랑 같은 true출력인데 이건 문자열로 반환
+		console.log("true > false : ", true > false)
+		console.log(`ab < ad : ${'ab' < 'ad'}`)
+		console.log(`0 < true : ${'0' < true}`)
+		console.log(`a.charCodeAt() : ${'a'.charCodeAt()}`)
+		console.log(`1 !== '1' : ${1 !== '1'}`)
+		console.log(`10 < 5 && 3 < 5 : ${10 < 5 && 3 < 5}`)
+		console.log(`${(5 + 4 * 3) !== 27}`)
+		})
+		
+		
+	</script>
+	
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,32 @@
+{{>layouts/header}}
+
+<!-- 내용 부분 table 모양 -->
+<table class="table table-striped mx-auto" style="width:90%; border:1px solid black">
+  <thead>
+    <tr class="table-dark">
+      <th scope="col">#</th>
+      <th scope="col">Title</th>
+      <th scope="col">COntent</th>
+    </tr>
+  </thead>
+  
+  <tbody>
+  <!-- articleList 만큼 반복수행한다 -->
+  {{#articleList}}
+    <tr>
+      <th scope="row">{{id}}</th>
+      <!-- /article/3 : PathVarialbe -->
+      <td><a href="/article/{{id}}">{{title}}</a></td>
+      <td>{{content}}</td>
+    </tr>
+  {{/articleList}}
+  </tbody>
+</table>
+
+<div class="mx-auto" style="width:90%">
+<a href="/article/WriteForm" class="btn btn-primary">새글 쓰기</a>
+</div>
+{{>layouts/footer}}
+
+
+

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h2>hello</h2>
+	<input id="num" type="number" value="50" min="1" max="100">
+	<button>/posts</button>
+	<div id="div1"></div>
+	
+	<script>
+		var url="https://jsonplaceholder.typicode.com"
+		const btnsEl = document.querySelectorAll('button')
+		const div1El = document.querySelector('#div1')
+		const numEl  = document.querySelector('#num')
+		btnsEl.forEach(function(btn, index) {
+			btn.onclick = function() {
+				switch(index) {
+				case 0:
+					fetch(`${url}/posts/${numEl.value}`)
+					// `` 안에는 문자열은 그대로 적고 변수는 ${}로 감싼다
+					  .then((response) => response.json())
+					  .then((json) => {
+						  console.log(json)
+						  let html = `<ul>
+						  	<li>userId: ${json.userId}</li>
+						  	<li>id: ${json.id}</li>
+						  	<li>title: ${json.title}</li>
+						  	<li>body: ${json.body}</li>
+						  </ul>`
+						  div1El.innerHTML = html
+						// div1.innerHTML = JSON.stringify(json)
+					  });
+					break;
+				}
+			}
+		})
+	</script>
+	
+</body>
+</html>

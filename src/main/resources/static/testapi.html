@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+<style>
+	h2, h3 { text-align : center; }
+	
+	h3 { margin-top : 30px; }
+	
+	#container {
+		display : flex;
+		justify-content : space-around;
+	}
+	
+	#box1 { 
+		width : 50%;
+		border : 2px solid black;
+		border-radius : 10px;
+		padding : 10px;
+	 }
+	 
+	#box2 { 
+		width : 30%;
+		border : 2px solid black;
+		border-radius : 10px;
+		padding : 10px;
+	 }
+	 
+	 tr { background : ''; }
+	 tr:hover td{ background : aqua; }
+</style>
+
+<title>Insert title here</title>
+</head>
+<body>
+	<h2 class="bg-primary text-white fw-bold mt-4 mb-3">Article Rest Api Test</h2>
+	<div id="container">
+	
+		<div id="box1">
+			<form>
+			  <div class="row mb-3">
+			    <label for="id" class="col-form-label col-sm-2">아이디</label>
+			    <div class="col-sm-10">
+			   	 <input type="number" class="form-control" id="id">
+			    </div>
+			  </div>
+			  <div class="row mb-3">
+			    <label for="title" class="col-form-label col-sm-2">제목</label>
+			    <div class="col-sm-10">
+			    	<input type="text" class="form-control" id="title">
+			    </div>
+			  </div>
+			  <div class="mb-3">
+			    <label for="content" class="col-form-label col-sm-2">내용</label>
+			    <textarea class="form-control" id="content" rows="4" style="width:100%" ></textarea>
+			  </div>
+			</form>
+		</div>
+	
+		<div id="box2" class="list-group">
+			<a href="/api/articles"  id="getlist" 
+			class="list-group-item list-group-item-action" aria-current="true">
+			 목록 조회
+			</a>                                                                 <!-- action : 누를때 깜빡 -->
+			<a id="get" href="/api/articles"
+			 class="list-group-item list-group-item-action">
+			 한개 조회
+			</a>
+			<a id="post" href="/api/articles" 
+			class="list-group-item list-group-item-action">
+			 추가
+			</a>
+			<a id="patch" href="/api/articles" 
+			class="list-group-item list-group-item-action">
+			 수정
+			</a>
+			<a id="delete" href="/api/articles" 
+			class="list-group-item list-group-item-action" tabindex="-1" aria-disabled="false">
+		   삭제
+			</a>
+		</div>
+
+	</div>
+	
+	<h3 class="bg-secondary text-white border-bottom pb-2">결과</h3>
+	<div id="result" style="margin-bottom:150px"></div>
+	
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+	
+	<script>
+		function makeTable( list ) {
+			let table = '<table class="table table-striped mx-auto" style="width:90%">'
+			table    += '<tr class="table-dark">'
+			table    += `<th>#</th>`
+			table    += `<th>Title</th>`
+			table    += `<th>Content</th>`
+			table    += '</tr>'
+			
+			list.forEach( (article) => {
+				table  += `<tr>
+				<td>${article.id}</td>
+				<td>${article.title}</td>
+				<td>${article.content}</td>
+				</tr>`
+			} )
+			
+			table    +=	'</table>'
+			return table;
+		}
+		
+		function activeClear(aEls) {
+			aEls.forEach( (aEl) => {
+				aEl.classList.remove('active')	
+			} )
+		}
+		
+		function textClear() {
+			let els = document.querySelectorAll('[class="form-control"]')
+			els.forEach( (el) => {
+				el.value = '';
+			} )
+		}
+	</script>
+	
+	<script>
+		// a Tag 클릭시 동작
+		const aEls = document.querySelectorAll('a') // a tag 배열 리턴
+		const resultEl = document.querySelector('#result')
+		const idEl = document.querySelector('#id')
+		const titleEl = document.querySelector('#title')
+		const contentEl = document.querySelector('#content')
+		
+		aEls.forEach( (a) => {
+			a.addEventListener('click', (e) => {
+				
+				activeClear(aEls)
+				a.classList.add('active')
+				
+				e.preventDefault();
+				e.stopPropagation();
+				
+				let id = a.id;
+				let url = a.href;
+		//	alert(a.innerHTML)
+				switch(a.id) {
+				case 'getlist' : // 목록 조회
+					// api controller 실행데이터 받아온다(fetch)
+					fetch(url)
+						.then( (response) => response.json() )
+						.then( (list) => {							 
+							console.log("첫list : ", JSON.stringify(list)) // json형식
+							console.log("첫list : ", list)                 // 객체 본연 형식
+							console.log(`첫list : ${list}`)                // `${}`객체를 toString형식
+							resultEl.innerHTML = makeTable(list); 
+							
+						} )
+						.then( (error) => console.log(error) )
+					break;
+				
+				case 'get' : // 한개 조회
+          let id = idEl.value					
+					if(id.trim() == '') {
+						alert('검색할 id 를 입력하세요')
+						break;
+					}
+					fetch(url + "/" + id)
+						.then( (response) => {
+							console.log('ㅇㅇㅇㅇㅇ',response)
+							if( response.status == 400 ) {
+								alert(id + ' 자료가 없습니다')
+								textClear();
+								return;
+							}
+							return response.json();
+							})
+						.then( (article) => {
+							idEl.value = article.id;
+							titleEl.value = article.title;
+							contentEl.value = article.content;
+						} )
+						.then( (error) => console.log(error) )
+					break;
+				
+				case 'post' : // 추가
+				  if( titleEl.value.trim() == '' ) { 
+					  alert('제목을 입력하세요')
+					  break; 
+					  }
+					fetch(url, {
+						  method: 'POST',
+						  body: JSON.stringify({ // 서버로 data 를 보낼때 json 문자열로 보내야 한다
+						    title   : titleEl.value,
+						    content : contentEl.value
+						  }),
+						  headers: {
+						    'Content-type': 'application/json; charset=UTF-8',
+						  },
+						})
+						  .then( (response) => response.json() )
+						  .then((json) => {
+							  textClear(); // 게시글 추가 하면 글씨 지워짐
+							  aEls[0].click(); // 자동으로 목록조회 a tag 클릭
+							  }) // 추가완료
+					break;
+					
+				case 'delete' :
+					if(idEl.value.trim() == '') {
+						alert('삭제할 아이디를 입력하세요')
+						break;
+					}
+					fetch(url + '/' + idEl.value, {
+						method : 'DELETE'
+					})
+					.then( (response) => {
+						console.log(response)
+						return response.json()
+					} )
+					.then( (result) => {
+						textClear();
+						alert('삭제 되었습니다')
+						aEls[0].click();
+					} )
+					break;
+					
+				case 'patch' : // 수정(일부)
+				  if( idEl.value.trim() == '' ) {
+					  alert(`수정할 아이디가 없습니다`)
+					  return;
+				  }
+					fetch(url, {
+						  method: 'PATCH',
+						  body: JSON.stringify({ // 서버로 data 를 보낼때 json 문자열로 보내야 한다
+							  id : idEl.value,
+						    title   : titleEl.value,
+						    content : contentEl.value
+						  }),
+						  headers: {
+						    'Content-type': 'application/json; charset=UTF-8',
+						  },
+						})
+						  .then( (response) => {
+							  if( response.status == 400 ) {
+								  alert(`${idEl.value}번 수정실패`)
+								  return;
+							  }
+							  return response.json()
+						  })
+						  .then((json) => {
+							  console.log('PATCH : ', json)
+							  alert(idEl.value + '번이 수정 되었습니다')
+							  textClear(); 
+							  aEls[0].click(); // 자동으로 목록조회 a tag 클릭
+							  }) // 추가완료
+					
+					break;
+				} // switch end
+			}) // a.click end			
+		} ) // aEls.forEach end
+		
+		// HttpStatus
+		// 200 : 정상 ok
+		// 201 : created - insert post 가 정상수행 됐다
+		// 404 : 주소(api 주소)나 파일이 존재하지 않는다
+		// 400 : 사용자 정의 오류 - 번호가 없습니다
+		// 405 : method 가 틀리다, @PostMapping("aaa") <- method get 을 호출
+		// 401 : Unauthorization 인증(로그인) 안됨 Authenticate + Authorization, 아이디/암호가 틀림
+		// 403 : Forbiddened (숨김) 인가오류, 권한 Role 이 잘못됨
+		
+		/*
+			400 : 요청 자체가 틀렷다
+			401 : 로그인 해야 한다
+			403 : 로그인은 했지만 권한이 없다
+			500 : 서버가 터졌다
+		*/
+		
+		// #result 안에 tr을 클릭하면 undefinded error
+		// js 동적 생성 이벤트 호출
+		// <a>목록조회</a> 를 클릭한 후에 table 이 생성된다
+		// 해결책 : 조상 Element 에 이벤트를 등록한다
+		resultEl.ondblclick = function(e) {
+			console.log('아..', e) // e.target == td
+			let tr  = e.target.parentNode
+			let tds = tr.childNodes
+			console.log('짜증난다 : ',tds)
+			idEl.value = tds[1].innerHTML
+			titleEl.value = tds[3].innerHTML
+			contentEl.value = tds[5].innerHTML
+		}
+		
+		
+	</script>
+	
+</body>
+</html>
+
+
+
