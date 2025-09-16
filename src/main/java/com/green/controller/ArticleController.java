@@ -14,7 +14,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.green.dto.Article;
 import com.green.dto.ArticleDTO;
+import com.green.dto.Comments;
 import com.green.repository.ArticleRepository;
+import com.green.service.CommentsService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,6 +26,9 @@ public class ArticleController {
 	
 	@Autowired
 	private ArticleRepository articleRepository;
+	
+	@Autowired
+	private CommentsService commentsService;
 	
 	@GetMapping("/article/WriteForm") 
 	public String writeForm(Model model) {
@@ -95,10 +100,7 @@ public class ArticleController {
 	
 	//  /article/10 : 10번 개시글 조회 id=10
 	@GetMapping("/article/{id}")
-	public String view(
-			@PathVariable("id") Long id,
-								Model model
-			) {
+	public String view(@PathVariable("id") Long id, Model model) {
 		System.out.println("아이디: " + id);
 		/* 조회방법 1 */
 		// Optional<Article> : null 이 들어와도 null point exception
@@ -115,7 +117,13 @@ public class ArticleController {
 		Article article = articleRepository.findById(id).orElse(null);
 		model.addAttribute("article", article);
 		
-		System.out.println("응애 : " + article);
+		// 댓글처리 추가
+		// step1. 댓글 조회
+		List<Comments> commentsList = commentsService.getComments(id);
+		
+		// step2. 조회된 데이터 model에 추가
+		model.addAttribute("commentsList", commentsList);
+		
 		return "article/view";
 	}
 	

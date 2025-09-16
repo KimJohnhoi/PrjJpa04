@@ -1,0 +1,62 @@
+<div id="comments-list">
+  <!--  start of comments list -->  
+  {{#commentsList}} 
+	<div class="card">
+	  <div class="card-header">{{ nickname }}
+	     &nbsp;&nbsp;&nbsp;&nbsp;
+	    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">수정</button>
+	    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">삭제</button>
+	  </div>
+	  <div class="card-body">{{body}}</div>
+	</div>
+	{{/commentsList}}
+	<!--  end of comments list -->	
+</div>
+
+<!-- edit modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">댓글 수정</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">NickName</label>
+            <input type="text" class="form-control" id="nickname">
+          </div>
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">댓글내용:</label>
+            <textarea class="form-control" id="body-text"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">수정</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  del modal -->
+<!-- Button trigger modal -->
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">삭제 확인</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">를 삭제하시겠습니까?</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Yes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
