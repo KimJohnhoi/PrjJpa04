@@ -1,51 +1,71 @@
-<div class="m-2" id="comments-new">
-	<div class="card-body">
-		<form>
-			 <div class="mb-3">
-			   <label class="form-label">닉네임</label>
-			   <label>
-		       <input type="text" class="form-control" id="new-comments-nickname" />
-			   </label>
-			 </div>
-		  <!--  댓글 본문 -->
-		  <div>
-			  <div class="mb-3">
-		       <label class="form-label">댓글 본문</label>
-		       <label>
-		         <textarea class="form-control" id="new-comments-body"></textarea>
-		       </label>
-		     </div>
-		  </div>
-		  <!--  전송 버튼 -->
-		  <button type="button" class="btn btn-primary" id="new-create-btn">댓글 작성</button>
-		</form>
-	</div>
+<div  class="m-2"  id="comments-new">
+  <div  class="card-body"> 
+    <!-- 댓글 작성 폼 -->
+    <form>
+      <!-- 닉네임 -->
+      <div  class="mb-3">
+        <label class="form-label">닉네임</label>
+        <label>
+           <input type="text" class="form-control" 
+              id="new-comments-nickname" />
+        </label>
+      </div> 
+      
+      <!-- 댓글 본문 -->
+      <div>
+       <div  class="mb-3">
+        <label class="form-label">댓글 본문</label>
+        <label>
+           <textarea class="form-control" rows="3"          
+              id="new-comments-body" ></textarea>
+        </label>
+        </div>      
+      </div>
+      
+      <!-- 전송 버튼 -->
+      <button type="button" class="btn btn-primary"
+         id="new-create-btn">댓글 작성</button> 
+    
+    </form> 
+  </div>
 </div>
 
+<!-- 새글 쓰기 기능 : js -->
 <script>
-const newCreateBtnEl = document.querySelector('#new-create-btn');
-newCreateBtnEl.addEventListener('click', () => {
-	let url = '/api/articles/{{ id }}/comments'
-	const nicknameEl = document.querySelector('#new-comments-nickname')
-	const bodyEl = document.querySelector('#new-comments-body')
-	const comment = {
-			nickname : nicknameEl.value,
-			body : bodyEl.value,
-			article_id : {{id}}
-	}
-	const params = {
-			method: 'POST',
-			body: JSON.stringify(comment),
-			headers: {"Content-type":"application/json;charset-utf-8"}
-	}
-	fetch(url, params)
-	.then(response => {
-		let cid = response.id;
-		const msg = ( response.ok ) ? "댓글이 등록되었습니다" : "댓글이 등록되지 않았습니다";
-		alert(msg);
-		window.location.href;
-	})
-	
-})
-
+   // 버튼 찾기   
+   const  newCreateBtnEl  =  document.querySelector('#new-create-btn')
+   const  nicknameEl = document.querySelector('#new-comments-nickname') 
+   const  bodyEl     = document.querySelector('#new-comments-body')
+     
+   newCreateBtnEl.addEventListener('click' , (e) => {
+	   if( nicknameEl.value.trim() == ''){
+		   alert('닉네임이 없습니다');
+		   return false;
+	   }
+	   if( bodyEl.value.trim() == ''){
+	       alert('댓글 내용이 없습니다');
+	       return false;
+	     }
+	   
+     let    url        = '/api/articles/{{id}}/comments'
+     const  comment = {
+       nickname    :  nicknameEl.value,        // 닉네임
+       body        :  bodyEl.value,    // 댓글 본문
+       article_id  :  {{id}}       // 원글번호 article_id      
+     }
+     const  params = {
+       method   : 'POST',
+       body     : JSON.stringify(comment),
+       headers  : { "Content-type":"application/json;charset=utf-8"  }
+     }
+     
+     fetch(url, params)
+       .then( response => {
+         let   cid = response.id;
+         const msg = ( response.ok ) ? "댓글이 등록되었습니다": "댓글이 등록 실패"
+           alert(msg)
+         window.location.reload();
+       })
+     
+   } )
 </script>

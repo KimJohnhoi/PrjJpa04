@@ -1,62 +1,186 @@
 <div id="comments-list">
-  <!--  start of comments list -->  
-  {{#commentsList}} 
-	<div class="card">
-	  <div class="card-header">{{ nickname }}
-	     &nbsp;&nbsp;&nbsp;&nbsp;
-	    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">수정</button>
-	    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">삭제</button>
-	  </div>
-	  <div class="card-body">{{body}}</div>
-	</div>
-	{{/commentsList}}
-	<!--  end of comments list -->	
+   <!-- 댓글 출력 반복 -->
+   {{#commentsList}}
+   <div class="card">
+     <div class="card-header">
+       {{nickname}}&nbsp;&nbsp;&nbsp;&nbsp;
+       <button 
+                   type="button" 
+                   class="btn btn-sm btn-outline-primary" 
+                   data-bs-toggle="modal" 
+                   data-bs-target="#updateModal" 
+                   data-bs-whatever="@mdo"
+                   
+                   data-bs-id="{{id}}"
+                   data-bs-nickname="{{nickname}}"
+                   data-bs-body="{{body}}"
+                   data-bs-article-id="{{article.id}}">수정
+        </button>
+        <button 
+                    type="button" 
+                    class="btn btn-sm btn-outline-danger" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#deleteModal"
+                    
+                    data-bs-id="{{id}}"
+                    data-bs-nickname="{{nickname}}"
+                    data-bs-body="{{body}}"
+                    data-bs-article-id="{{article.id}}">삭제
+       </button>
+     </div>
+     <div class="card-body">
+      {{body}}
+     </div>
+   </div>
+   {{/commentsList}}
+      <!-- 댓글 출력 반복 끝 -->
+
 </div>
 
-<!-- edit modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- 모달 : 수정 -->
+
+<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">댓글 수정</h5>
+        <h1 class="modal-title fs-5" id="updateModalLabel">댓글 수정</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form>
+          <input type="hidden" id="update-id"/>
+          <input type="hidden" id="update-article-id"/> 
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">NickName</label>
-            <input type="text" class="form-control" id="nickname">
+            <input type="text" class="form-control" id="update-nickname" >
           </div>
           <div class="mb-3">
-            <label for="message-text" class="col-form-label">댓글내용:</label>
-            <textarea class="form-control" id="body-text"></textarea>
+            <label for="message-text" class="col-form-label">댓글 내용:</label>
+            <textarea class="form-control" id="update-body"></textarea>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary">수정</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+	       <button type="button" class="btn btn-primary" id="comment-update-btn">수정</button>
+	       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="comment-delete-btn">취소</button>
       </div>
     </div>
   </div>
 </div>
 
-<!--  del modal -->
-<!-- Button trigger modal -->
+<!-- 모달 : 삭제 -->
+<div class="modal fade" 
+       id="deleteModal" 
+       data-bs-backdrop="static" 
+       data-bs-keyboard="false" 
+       tabindex="-1" 
+       aria-labelledby="staticBackdropLabel" 
+       aria-hidden="true">
+       
+	 <div class="modal-dialog">
+	   <div class="modal-content">
+	       <div class="modal-header">
+	        <h1 class="modal-title fs-5" id="staticBackdropLabel">삭제 확인</h1>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body"><span id="delete-id"></span>삭제하시겠습니까?</div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-primary" id="deleteYes">Yes</button>
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+	      </div>  
+	   </div>
+	 </div>
+ </div>
 
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">삭제 확인</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">를 삭제하시겠습니까?</div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Yes</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-        
-      </div>
-    </div>
-  </div>
-</div>
+<!-- 수정버튼 클릭시 모달창에 값을 넘기고 수정데이터 입력받아
+       저장버튼 누르면 db 에 값을 수정 -->
+<script>
+   // 모달창을 찾는다
+   const updateModalEl     = document.querySelector('#updateModal')
+   const deleteModalEl     = document.querySelector('#deleteModal')
+
+   // 이벤트 연결 :
+   // show.bs.modal   - modal창이 화면에 그려지기 전에
+   // shown.bs.modal  - modal창이 열리고 화면에 표시된 후
+   // hide.bs.modal   - modal창이 닫히기 직전
+   // hidden.bs.modal - modal창이 닫힌 후 완전히 사라진 시점
+   updateModalEl.addEventListener('show.bs.modal', (e) => {
+      // 1. 눌러진 수정 버튼 정보
+      const btn     = e.relatedTarget;
+      
+      // 수정버튼의 data-bs-id 를 가져온다
+      let id        = btn.dataset.bsId           // data-bs-id 내가 만든 속성들
+      let nickname  = btn.dataset.bsNickname          // data-bs-nickname
+      let body      = btn.dataset.bsBody            // data-bs-body
+      let articleId = btn.dataset.bsIdArticleId       // data-bs-article-id
+      
+      // modal창에 출력한다
+      document.querySelector('#update-article-id').value = articleId
+      document.querySelector('#update-id').value = id
+      document.querySelector('#update-nickname').value = nickname
+      document.querySelector('#update-body').value = body
+      
+   })
+   
+   deleteModalEl.addEventListener('show.bs.modal', (e) => {
+	   // 클릭한 삭제버튼을 찾는다
+	   const btn = e.relatedTarget;
+	   
+	   // 삭제버튼의 data-bs-id 를 가져온다
+     let id        = btn.dataset.bsId 
+     let nickname  = btn.dataset.bsNickname
+     let body      = btn.dataset.bsBody
+     let articleId = btn.dataset.bsIdArticleId
+	   
+	   const spanIdEl = deleteModalEl.querySelector('#delete-id');
+	   spanIdEl.textContent = `${nickname} : ${id}번 댓글을`;
+	   spanIdEl.dataset.id = id; // data-id="11" 속성 추가
+   })
+</script>
+
+<script>
+   // modal 창의 수정 버튼 클릭 - comment-update-btn
+   const commentUpdateBtnEl = document.querySelector('#comment-update-btn')
+   commentUpdateBtnEl.addEventListener('click', (e) => {
+      let comment = {
+            id : document.querySelector('#update-id').value,
+            articleId : document.querySelector('#update-article-id').value,
+            nickname : document.querySelector('#update-nickname').value,
+            body : document.querySelector('#update-body').value
+      }
+      let url = '/api/comments' + '/' + comment.id;
+      let params = {
+            method  : 'PATCH',
+            headers : {"Content-Type":"application/json;charset=UTF-8"},
+            body    : JSON.stringify(comment)
+      }
+      fetch(url,params)
+      .then( (response) => {
+         console.log(response);
+         let msg = (response.ok)? "댓글이 수정 되었습니다" : "댓글 수정 실패"
+            alert(msg)
+            window.location.reload();
+      } )
+   })
+   
+   // modal 창의 삭제 버튼 클릭 - comment-delete-btn
+   const deleteYesEl = document.querySelector('#deleteYes')
+   deleteYesEl.addEventListener('click', (e) => {
+	     let comment = {
+	    		 id : document.querySelector('#delete-id').dataset.id
+	     }
+		   let url = '/api/comments'
+		   let params = {
+				   method  : 'DELETE',
+				   headers : {"Content-Type":"application/json;charset=UTF-8"},
+				   body : JSON.stringify(comment)
+			 }
+	     fetch(url,params)
+	      .then( (response) => {
+	         console.log(response);
+	         let msg = (response.ok)? "댓글이 삭제 되었습니다" : "댓글 삭제 실패"
+	            alert(msg)
+	            window.location.reload();
+	      } )
+   })
+</script>

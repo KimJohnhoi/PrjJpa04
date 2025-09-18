@@ -1,5 +1,7 @@
 package com.green.dto;
 
+import com.green.entity.Article;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

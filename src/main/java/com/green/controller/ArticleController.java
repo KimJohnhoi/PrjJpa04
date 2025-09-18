@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.green.dto.Article;
 import com.green.dto.ArticleDTO;
-import com.green.dto.Comments;
+import com.green.entity.Article;
+import com.green.entity.Comments;
 import com.green.repository.ArticleRepository;
 import com.green.service.CommentsService;
 

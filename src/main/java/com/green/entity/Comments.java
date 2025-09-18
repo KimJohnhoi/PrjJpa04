@@ -1,5 +1,6 @@
-package com.green.dto;
+package com.green.entity;
 
+import com.green.dto.CommentsDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -43,4 +44,23 @@ public class Comments {
 	@ManyToOne 								// 외래키 다대일 관계
 	@JoinColumn(name="article_id") 			// 외래키 칼럼
 	private Article article; 				// 연결될 entity 객체의 이름
+	
+   public static Comments createComment(CommentsDto dto, Article article) {
+	  Comments comments = new Comments(
+		    null, //dto.getId()
+		    dto.getBody(),
+		    dto.getNickname(),
+		    article
+	    );
+      return comments;
+   }
+   
+   public void updateComment(CommentsDto dto) {	   
+	   if(this.id != dto.getId())
+		   throw new IllegalArgumentException("댓글 수정 실패! 잘못된 id가 입력됐습니다");
+	   if(dto.getNickname() != null)
+		   this.nickname = dto.getNickname();
+	   if(dto.getBody() != null)
+		   this.body = dto.getBody();	   
+   }
 }

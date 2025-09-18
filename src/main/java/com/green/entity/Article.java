@@ -1,4 +1,4 @@
-package com.green.dto;
+package com.green.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

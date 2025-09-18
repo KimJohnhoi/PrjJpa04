@@ -6,7 +6,7 @@
                  version="3.0">
     <named-native-query
             name="Comments.findByNickname"
-            result-class="com.green.dto.Comments">
+            result-class="com.green.entity.Comments">
         <query>
             <![CDATA[
                   SELECT * FROM comments WHERE nickname = :nickname
